@@ -5,7 +5,7 @@ import { hardhat, sepolia } from 'wagmi/chains';
 // without one, so a placeholder is fine for local development.
 export const config = getDefaultConfig({
   appName: 'Food Traceability Platform',
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? 'PLACEHOLDER_PROJECT_ID',
+  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'PLACEHOLDER_PROJECT_ID',
   chains: [hardhat, sepolia],
   ssr: false,
 });
