@@ -34,6 +34,4 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      # CI=false: don't fail on pre-existing CRA lint warnings in legacy code
-      # that is scheduled for replacement in Phase 2 (Vite migration).
-      - run: CI=false npm run build
+      - run: npm run build
