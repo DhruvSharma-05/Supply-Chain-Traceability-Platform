@@ -21,15 +21,28 @@ import {
   Divider,
 } from '@mui/material';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useSearchParams } from 'react-router-dom';
+import { QRCodeCanvas } from 'qrcode.react';
 import { contractAddress, foodTraceabilityAbi } from '../contract';
 import { State, stateLabels, stateColors } from '../lib/enums';
 import { formatPrice, formatTimestamp, shortenAddress } from '../lib/format';
+import { exportProductCsv, exportProductPdf } from '../lib/export';
 import type { Product, ProductTransaction } from '../types/contract';
 
 export default function ProductTrackingPage() {
   const { address } = useAccount();
   const [searchId, setSearchId] = useState('');
   const [productId, setProductId] = useState<bigint | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Auto-load from a ?id= deep link (e.g. a scanned QR code).
+  useEffect(() => {
+    const idParam = searchParams.get('id');
+    if (idParam && Number(idParam) > 0) {
+      setSearchId(idParam);
+      setProductId(BigInt(Number(idParam)));
+    }
+  }, [searchParams]);
 
   const { data: owner } = useReadContract({
     address: contractAddress,
@@ -80,7 +93,12 @@ export default function ProductTrackingPage() {
 
   const handleSearch = () => {
     const n = Number(searchId);
-    setProductId(n > 0 ? BigInt(n) : null);
+    if (n > 0) {
+      setProductId(BigInt(n));
+      setSearchParams({ id: searchId });
+    } else {
+      setProductId(null);
+    }
   };
 
   const handleAdvance = () => {
@@ -152,6 +170,32 @@ export default function ProductTrackingPage() {
                 <Detail label="Distributor" value={shortenAddress(product.distributor)} />
                 <Detail label="Retailer" value={shortenAddress(product.retailer)} />
               </Grid>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  mt: 3,
+                  flexWrap: 'wrap',
+                  gap: 2,
+                }}
+              >
+                <Box sx={{ textAlign: 'center' }}>
+                  <QRCodeCanvas value={`${window.location.origin}/tracking?id=${product.id}`} size={96} />
+                  <Typography variant="caption" display="block" color="text.secondary">
+                    Scan to trace
+                  </Typography>
+                </Box>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="outlined" size="small" onClick={() => exportProductCsv(product, history ?? [])}>
+                    Export CSV
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={() => exportProductPdf(product, history ?? [])}>
+                    Export PDF
+                  </Button>
+                </Stack>
+              </Box>
             </CardContent>
           </Card>
 

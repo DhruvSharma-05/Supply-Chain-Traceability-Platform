@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -9,6 +10,9 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  IconButton,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -19,6 +23,7 @@ import {
   Storefront,
   Sync,
   BarChart,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -28,7 +33,6 @@ const DRAWER_WIDTH = 240;
 
 type NavItem = { label: string; path: string; icon: ReactNode };
 
-// Nav entries are added here as their pages are wired up.
 const navItems: NavItem[] = [
   { label: 'Dashboard', path: '/', icon: <DashboardIcon /> },
   { label: 'Products', path: '/products', icon: <Inventory /> },
@@ -43,49 +47,97 @@ const navItems: NavItem[] = [
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const go = (path: string) => {
+    navigate(path);
+    setMobileOpen(false);
+  };
+
+  const drawerContent = (
+    <>
+      <Toolbar />
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item.path} disablePadding>
+            <ListItemButton
+              selected={location.pathname === item.path}
+              onClick={() => go(item.path)}
+              sx={{
+                borderRadius: 2,
+                mx: 1,
+                my: 0.25,
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(34,197,94,0.12)',
+                  '&:hover': { backgroundColor: 'rgba(34,197,94,0.18)' },
+                  '& .MuiListItemIcon-root': { color: 'primary.main' },
+                  '& .MuiListItemText-primary': { color: 'primary.main', fontWeight: 600 },
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </>
+  );
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (t) => t.zIndex.drawer + 1,
-          bgcolor: 'background.paper',
-          color: 'text.primary',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        }}
-      >
+      <AppBar position="fixed" sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" fontWeight="bold">
-            🌾 Food Traceability Platform
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton
+              edge="start"
+              onClick={() => setMobileOpen((o) => !o)}
+              sx={{ display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Box component="span" sx={{ fontSize: '1.4rem', lineHeight: 1 }}>
+              🌾
+            </Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #22C55E, #2DD4BF)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Food Traceability Platform
+            </Typography>
+          </Box>
           <ConnectButton />
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: DRAWER_WIDTH,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' },
-        }}
-      >
-        <Toolbar />
-        <List>
-          {navItems.map((item) => (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => navigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
+        {isMobile ? (
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            ModalProps={{ keepMounted: true }}
+            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}
+          >
+            {drawerContent}
+          </Drawer>
+        ) : (
+          <Drawer
+            variant="permanent"
+            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}
+            open
+          >
+            {drawerContent}
+          </Drawer>
+        )}
+      </Box>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: 'background.default', minHeight: '100vh' }}>
         <Toolbar />
