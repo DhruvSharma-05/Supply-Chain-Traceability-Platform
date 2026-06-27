@@ -18,6 +18,7 @@ import {
   Search,
   Storefront,
   Sync,
+  BarChart,
 } from '@mui/icons-material';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -36,6 +37,7 @@ const navItems: NavItem[] = [
   { label: 'Product Tracking', path: '/tracking', icon: <Search /> },
   { label: 'Marketplace', path: '/marketplace', icon: <Storefront /> },
   { label: 'Simulator', path: '/simulator', icon: <Sync /> },
+  { label: 'Analytics', path: '/analytics', icon: <BarChart /> },
 ];
 
 export default function Layout() {

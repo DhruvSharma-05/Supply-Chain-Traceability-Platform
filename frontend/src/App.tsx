@@ -7,6 +7,7 @@ import CreateProductPage from './pages/CreateProductPage';
 import ProductTrackingPage from './pages/ProductTrackingPage';
 import Marketplace from './pages/Marketplace';
 import AdminSimulator from './pages/AdminSimulator';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="tracking" element={<ProductTrackingPage />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="simulator" element={<AdminSimulator />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
