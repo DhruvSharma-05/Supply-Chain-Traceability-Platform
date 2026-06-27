@@ -2,6 +2,17 @@
 
 A comprehensive blockchain-based supply chain traceability platform for food products, enabling transparent tracking from farm to consumer.
 
+## ⚠️ Project Status
+
+**This project is under an active refactor from a UI prototype into a real dApp.**
+
+Current reality (read before relying on anything below):
+- The `FoodTraceability` smart contract is complete and deployable, but **has no tests yet**.
+- The React frontend currently runs on **mock, in-memory data** — it does **not** call the smart contract. Wallet "connection" and all "transactions" are simulated.
+- Several sections further down describe the *intended* end state, not what runs today.
+
+The plan to close that gap is tracked in [`ISSUES.md`](ISSUES.md) (Phases 0–7). Contributor and AI-agent working guidelines live in [`CLAUDE.md`](CLAUDE.md).
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -101,8 +112,7 @@ The Blockchain Supply Chain Traceability Platform is a decentralized application
 
 ### Smart Contract Setup
 ```bash
-# Navigate to contracts directory
-cd contracts
+# From the repository root (Hardhat runs from root, not contracts/)
 
 # Install dependencies
 npm install
@@ -183,31 +193,26 @@ npm start
 ```
 blockchain-supply-chain/
 ├── contracts/
-│   ├── FoodTraceability.sol
-│   ├── scripts/
-│   │   └── deploy.js
-│   └── test/
-│       └── FoodTraceability.test.js
+│   └── FoodTraceability.sol
+├── scripts/
+│   └── deploy.js
+├── test/                      # (empty — contract tests added in Phase 1)
+├── hardhat.config.js
 ├── frontend/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │   └── Layout/
+│   │   │   ├── Common/        # NetworkChecker
+│   │   │   └── Layout/        # Layout
 │   │   ├── context/
-│   │   │   └── Web3Context.js
-│   │   ├── pages/
-│   │   │   ├── AdminPage.js
-│   │   │   ├── AdminSupplyChainSimulator.js
-│   │   │   ├── AnalyticsDashboard.js
-│   │   │   ├── CreateProductPage.js
-│   │   │   ├── DashboardPage.js
-│   │   │   ├── Marketplace.js
-│   │   │   ├── ProductTrackingPage.js
-│   │   │   ├── ProductsPage.js
-│   │   │   ├── StakeholdersPage.js
-│   │   │   └── SupplyChainVisualization.js
+│   │   │   └── Web3Context.js # mock data layer (no contract calls yet)
+│   │   ├── pages/             # Dashboard, Products, Tracking, Admin, etc.
+│   │   ├── theme/
 │   │   └── App.js
 │   └── package.json
+├── research/                  # research paper + MVP documentation
+├── CLAUDE.md                  # contributor / agent guidelines
+├── ISSUES.md                  # refactor roadmap (Phases 0–7)
 ├── README.md
 └── package.json
 ```
@@ -283,8 +288,7 @@ All interactions with the blockchain are done through the smart contract functio
 
 ### Smart Contract Testing
 ```bash
-# Run contract tests
-cd contracts
+# Run contract tests (from repository root)
 npx hardhat test
 ```
 
@@ -296,9 +300,9 @@ npm test
 ```
 
 ### Test Coverage
-- Unit tests for all smart contract functions
-- Integration tests for frontend components
-- End-to-end tests for key user workflows
+> **Status:** Not yet implemented. There are currently no automated tests.
+> A full Hardhat test suite for the contract is planned in Phase 1 (see [`ISSUES.md`](ISSUES.md)),
+> with frontend and end-to-end tests in later phases.
 
 ## Deployment
 

@@ -79,7 +79,7 @@ contract FoodTraceability is Ownable {
     event ProductCreated(uint256 indexed productId, address indexed farmer, string name);
     event StateChanged(uint256 indexed productId, State newState, address indexed changedBy);
     event StakeholderRegistered(address indexed stakeholder, Role role, string name);
-    event OwnershipTransferred(uint256 indexed productId, address indexed from, address indexed to);
+    event ProductOwnershipTransferred(uint256 indexed productId, address indexed from, address indexed to);
     event QualityAlert(uint256 indexed productId, string alertType, string description);
     
     // Access control modifiers
@@ -196,8 +196,12 @@ contract FoodTraceability is Ownable {
         string memory _location
     ) public onlyProductOwner(_productId) {
         FoodProduct storage product = products[_productId];
+        require(
+            uint8(_newState) == uint8(product.currentState) + 1,
+            "Invalid state transition: must advance one stage"
+        );
         product.currentState = _newState;
-        
+
         productHistory[_productId].push(Transaction({
             productId: _productId,
             from: msg.sender,
@@ -223,7 +227,11 @@ contract FoodTraceability is Ownable {
         
         Stakeholder memory newOwner = stakeholders[_to];
         require(newOwner.isActive, "Recipient not registered");
-        
+        require(
+            uint8(_newState) == uint8(product.currentState) + 1,
+            "Invalid state transition: must advance one stage"
+        );
+
         // Update ownership based on recipient role
         if (newOwner.role == Role.Processor) {
             product.processor = _to;
@@ -248,7 +256,7 @@ contract FoodTraceability is Ownable {
             location: newOwner.location
         }));
         
-        emit OwnershipTransferred(_productId, from, _to);
+        emit ProductOwnershipTransferred(_productId, from, _to);
         emit StateChanged(_productId, _newState, msg.sender);
     }
     
