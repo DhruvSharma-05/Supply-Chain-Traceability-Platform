@@ -133,7 +133,15 @@ export default function AdminSimulator() {
               )}
 
               {log.length > 0 && (
-                <Box sx={{ bgcolor: 'grey.100', borderRadius: 1, p: 2 }}>
+                <Box
+                  sx={{
+                    bgcolor: 'rgba(0,0,0,0.35)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 2,
+                    p: 2,
+                    color: 'primary.light',
+                  }}
+                >
                   {log.map((line, i) => (
                     <Typography key={i} variant="body2" sx={{ fontFamily: 'monospace' }}>
                       {line}
