@@ -5,6 +5,8 @@ import ProductsPage from './pages/ProductsPage';
 import StakeholdersPage from './pages/StakeholdersPage';
 import CreateProductPage from './pages/CreateProductPage';
 import ProductTrackingPage from './pages/ProductTrackingPage';
+import Marketplace from './pages/Marketplace';
+import AdminSimulator from './pages/AdminSimulator';
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
           <Route path="stakeholders" element={<StakeholdersPage />} />
           <Route path="create" element={<CreateProductPage />} />
           <Route path="tracking" element={<ProductTrackingPage />} />
+          <Route path="marketplace" element={<Marketplace />} />
+          <Route path="simulator" element={<AdminSimulator />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -10,7 +10,15 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { Dashboard as DashboardIcon, Inventory, People, Add, Search } from '@mui/icons-material';
+import {
+  Dashboard as DashboardIcon,
+  Inventory,
+  People,
+  Add,
+  Search,
+  Storefront,
+  Sync,
+} from '@mui/icons-material';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import type { ReactNode } from 'react';
@@ -26,6 +34,8 @@ const navItems: NavItem[] = [
   { label: 'Stakeholders', path: '/stakeholders', icon: <People /> },
   { label: 'Create Product', path: '/create', icon: <Add /> },
   { label: 'Product Tracking', path: '/tracking', icon: <Search /> },
+  { label: 'Marketplace', path: '/marketplace', icon: <Storefront /> },
+  { label: 'Simulator', path: '/simulator', icon: <Sync /> },
 ];
 
 export default function Layout() {
